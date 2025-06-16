@@ -4,6 +4,7 @@
 #include "MyCharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "MyAnimInstance.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -35,6 +36,9 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AnimInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
+	//Todo
 	
 }
 
@@ -50,5 +54,26 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(TEXT("ForwardBackward"), this, &AMyCharacter::KeyUpdown);
+	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMyCharacter::KeyLeftRight);
+
+	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AMyCharacter::KeyAttack);
+	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AMyCharacter::Jump);
+
+}
+
+void AMyCharacter::KeyUpdown(float Value)
+{
+	AddMovementInput(GetActorForwardVector(), Value, false);
+}
+
+void AMyCharacter::KeyLeftRight(float Value)
+{
+	AddMovementInput(GetActorRightVector(), Value, false);
+}
+
+void AMyCharacter::KeyAttack()
+{
+	UE_LOG(LogTemp, Log, TEXT("Attack"));
 }
 

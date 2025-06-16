@@ -12,6 +12,9 @@ class UNREALCPLUS_API AMyCharacter : public ACharacter
 	GENERATED_BODY()
 private:
 	UPROPERTY(VisibleAnywhere)
+	class UMyAnimInstance* AnimInstance;
+
+	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* CameraBoom;
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* FollowCamera;
@@ -30,5 +33,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void KeyUpdown(float Value);
+	void KeyLeftRight(float Value);
+	void KeyAttack();
 
 };
