@@ -36,7 +36,7 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+										  //UAnimInstance*
 	AnimInstance = Cast<UMyAnimInstance>(GetMesh()->GetAnimInstance());
 	//Todo
 	
