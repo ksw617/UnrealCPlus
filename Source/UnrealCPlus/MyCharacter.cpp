@@ -29,6 +29,7 @@ AMyCharacter::AMyCharacter()
 	FollowCamera->SetupAttachment(CameraBoom);
 
 	CameraBoom->TargetArmLength = 400.0f;
+	CameraBoom->bUsePawnControlRotation = true;
 
 }
 
@@ -57,6 +58,9 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis(TEXT("ForwardBackward"), this, &AMyCharacter::KeyUpdown);
 	PlayerInputComponent->BindAxis(TEXT("LeftRight"), this, &AMyCharacter::KeyLeftRight);
 
+	PlayerInputComponent->BindAxis(TEXT("LookLeftRight"), this, &AMyCharacter::LookLeftRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUpDown"), this, &AMyCharacter::LookUpDown);
+
 	PlayerInputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &AMyCharacter::KeyAttack);
 	PlayerInputComponent->BindAction(TEXT("Jump"), EInputEvent::IE_Pressed, this, &AMyCharacter::Jump);
 
@@ -75,5 +79,15 @@ void AMyCharacter::KeyLeftRight(float Value)
 void AMyCharacter::KeyAttack()
 {
 	UE_LOG(LogTemp, Log, TEXT("Attack"));
+}
+
+void AMyCharacter::LookLeftRight(float Value)
+{
+	AddControllerYawInput(Value);
+}
+
+void AMyCharacter::LookUpDown(float Value)
+{
+	AddControllerPitchInput(Value);
 }
 
