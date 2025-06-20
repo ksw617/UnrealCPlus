@@ -40,5 +40,7 @@ public:
 	void LookLeftRight(float Value);
 	void LookUpDown(float Value);
 
+	void PlayerAttack();
+
 
 };

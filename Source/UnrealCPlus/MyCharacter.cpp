@@ -78,7 +78,10 @@ void AMyCharacter::KeyLeftRight(float Value)
 
 void AMyCharacter::KeyAttack()
 {
-	UE_LOG(LogTemp, Log, TEXT("Attack"));
+	if (IsValid(AnimInstance))
+	{
+		AnimInstance->PlayAttackMontage();
+	}
 }
 
 void AMyCharacter::LookLeftRight(float Value)
@@ -89,5 +92,27 @@ void AMyCharacter::LookLeftRight(float Value)
 void AMyCharacter::LookUpDown(float Value)
 {
 	AddControllerPitchInput(Value);
+}
+
+void AMyCharacter::PlayerAttack()
+{
+	FHitResult HitResult;
+	FCollisionQueryParams Params(NAME_None, false, this);
+
+	float AttackRange = 100.f;
+	float AttackRadius = 50.f;
+
+	bool Result = GetWorld()->SweepSingleByChannel(OUT HitResult,
+		GetActorLocation(), GetActorLocation() + GetActorForwardVector() * AttackRange,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2,
+		FCollisionShape::MakeSphere(AttackRange),
+		Params);
+
+
+	if (Result)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Ãæµ¹"));
+	}
 }
 

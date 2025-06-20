@@ -5,10 +5,14 @@
 #include "MyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-
-void UMyAnimInstance::NativeInitializeAnimation()
+UMyAnimInstance::UMyAnimInstance()
 {
-	Super::NativeInitializeAnimation();
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM(TEXT("/Script/Engine.AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/Attack_PrimaryA_Montage.Attack_PrimaryA_Montage'"));
+
+	if (AM.Succeeded())
+	{
+		AttackMontage = AM.Object;
+	}
 }
 
 void UMyAnimInstance::NativeBeginPlay()
@@ -24,6 +28,8 @@ void UMyAnimInstance::NativeBeginPlay()
 			CharacterMovement = MyCharacter->GetCharacterMovement();
 		}
 	}
+
+
 }
 
 void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -38,8 +44,6 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 		UnrotateVector.Normalize();
 
-
-
 		Vertical = UnrotateVector.X;
 		Horizontal = UnrotateVector.Y;
 
@@ -48,6 +52,22 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		auto Acceleration = CharacterMovement->GetCurrentAcceleration();
 
 		ShouldMove = GroundSpeed >= 3.0 && Acceleration != FVector::Zero();
+
+		IsFalling = CharacterMovement->IsFalling();
+
+	}
+}
+
+void UMyAnimInstance::PlayAttackMontage()
+{
+	if (IsValid(AttackMontage))
+	{
+		if (!Montage_IsPlaying(AttackMontage))
+		{
+			Montage_Play(AttackMontage);
+
+			MyCharacter->PlayerAttack();
+		}
 
 	}
 }
