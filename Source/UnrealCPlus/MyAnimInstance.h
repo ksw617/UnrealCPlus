@@ -32,14 +32,17 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UCharacterMovementComponent* CharacterMovement;
 	UPROPERTY(VisibleAnywhere)
-	UAnimMontage* AttackMontage; // UAnimMontage 포인터
+	UAnimMontage* AttackMontage;
 public:
 	UMyAnimInstance(); 
-	//virtual void NativeInitializeAnimation() override;
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
-	void PlayAttackMontage(); // 외부에서 Montage 플레이 해줄꺼임
+	void PlayAttackMontage(); 
+
+public:
+	UFUNCTION()
+	void AnimNotify_Hit();
 	
 };
