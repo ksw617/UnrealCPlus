@@ -7,7 +7,7 @@
 
 UMyAnimInstance::UMyAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM(TEXT("/Script/Engine.AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/Attack_PrimaryA_Montage.Attack_PrimaryA_Montage'"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AM(TEXT("/Script/Engine.AnimMontage'/Game/ParagonSparrow/Characters/Heroes/Sparrow/Animations/Primary_Fire_Med_Montage.Primary_Fire_Med_Montage'"));
 
 	if (AM.Succeeded())
 	{
@@ -60,10 +60,13 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UMyAnimInstance::PlayAttackMontage()
 {
+	UE_LOG(LogTemp, Log, TEXT("PlayAttackMontage"));
 	if (IsValid(AttackMontage))
 	{
+		UE_LOG(LogTemp, Log, TEXT("IsValid"));
 		if (!Montage_IsPlaying(AttackMontage))
 		{
+			UE_LOG(LogTemp, Log, TEXT("Is Not Playing"));
 			Montage_Play(AttackMontage);
 		}
 
