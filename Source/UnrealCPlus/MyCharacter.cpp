@@ -7,6 +7,7 @@
 #include "MyAnimInstance.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Arrow.h"
 
 
 // Sets default values
@@ -33,6 +34,7 @@ AMyCharacter::AMyCharacter()
 
 	CameraBoom->TargetArmLength = 400.0f;
 	CameraBoom->bUsePawnControlRotation = true;
+	CameraBoom->SocketOffset = FVector(0.f, 120.f, 75.f); // 수정
 
 }
 
@@ -127,58 +129,17 @@ void AMyCharacter::Fire(const FInputActionValue& Value)
 	{
 		AnimInstance->PlayAttackMontage();
 
-		UE_LOG(LogTemp, Log, TEXT("IsValid AnimInstance"));
+		FActorSpawnParameters params;
+		params.Owner = this;
+
+		auto MyArrow = GetWorld()->SpawnActor<AArrow>(GetActorLocation(), GetActorRotation(), params);
+		
 	}
 }
 
 void AMyCharacter::PlayerAttack()
 {
-	FHitResult HitResult;
-	FCollisionQueryParams Params;
-
-	float AttackRange = 100.f;
-	float AttackRadius = 50.f;
-	FVector StartPos = GetActorLocation();
-	FVector EndPos = GetActorLocation() + GetActorForwardVector() * AttackRange;
-
-	bool Result = GetWorld()->SweepSingleByChannel
-	(
-		HitResult,									//충돌 결과를 저장할 변수					
-		StartPos,									//시작 지점
-		EndPos,										//끝 지점
-		FQuat::Identity,							//회전 (기본 값)
-		ECC_GameTraceChannel2,						//충돌 채널 (Visibilirty)
-		FCollisionShape::MakeSphere(AttackRange),	//형태 : Sphere(구) MakeSphere(반지름)
-		Params										//충돌 쿼리 파라미터
-	);
-
-
-	//
-	FVector Vec = GetActorForwardVector() * AttackRange;
-	FVector Center = GetActorLocation() + Vec * 0.5f;
-	float HalfHeight = AttackRange * 0.5f + AttackRadius;
-	FQuat Rotation = FRotationMatrix::MakeFromZ(Vec).ToQuat();
-	FColor DrawColor;
 	
-	DrawColor = Result ? FColor::Green : FColor::Red;
-
-	//if (Result)
-	//{
-	//	DrawColor = FColor::Green;
-	//}
-	//else
-	//{
-	//	DrawColor = FColor::Red;
-	//}
-
-	DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, Rotation, DrawColor, false, 2.f);
-
-	if (Result && HitResult.GetActor())
-	{
-		UE_LOG(LogTemp, Log, TEXT("Hit : %s"), *HitResult.GetActor()->GetName());
-
-	}
-
-
+	UE_LOG(LogTemp, Log, TEXT("PlayerAttack"));
 }
 

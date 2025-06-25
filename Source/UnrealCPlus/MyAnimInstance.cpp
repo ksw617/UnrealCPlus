@@ -4,6 +4,7 @@
 #include "MyAnimInstance.h"
 #include "MyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "kismet/kismetMathLibrary.h"
 
 UMyAnimInstance::UMyAnimInstance()
 {
@@ -40,33 +41,33 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		Velocity = CharacterMovement->Velocity;
 		FRotator Rotation = MyCharacter->GetActorRotation();
-		FVector UnrotateVector = Rotation.UnrotateVector(Velocity);
-
-		UnrotateVector.Normalize();
-
-		Vertical = UnrotateVector.X;
-		Horizontal = UnrotateVector.Y;
-
 		GroundSpeed = Velocity.Size2D();
-
 		auto Acceleration = CharacterMovement->GetCurrentAcceleration();
 
 		ShouldMove = GroundSpeed >= 3.0 && Acceleration != FVector::Zero();
 
 		IsFalling = CharacterMovement->IsFalling();
 
+		 AimRotation = MyCharacter->GetBaseAimRotation();
+
+		 FRotator RotFromX = UKismetMathLibrary::MakeRotFromX(Velocity);
+
+		 FRotator DeltaRotation = AimRotation - RotFromX;
+		 DeltaRotation.Normalize();
+
+		 YawOffset = DeltaRotation.Yaw;
+
+
+
 	}
 }
 
 void UMyAnimInstance::PlayAttackMontage()
 {
-	UE_LOG(LogTemp, Log, TEXT("PlayAttackMontage"));
 	if (IsValid(AttackMontage))
 	{
-		UE_LOG(LogTemp, Log, TEXT("IsValid"));
 		if (!Montage_IsPlaying(AttackMontage))
 		{
-			UE_LOG(LogTemp, Log, TEXT("Is Not Playing"));
 			Montage_Play(AttackMontage);
 		}
 
