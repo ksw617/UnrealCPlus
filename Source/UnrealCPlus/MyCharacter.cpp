@@ -80,7 +80,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 
-		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Triggered, this, &AMyCharacter::Fire);
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AMyCharacter::Fire);
 
 	}
 }
@@ -124,15 +124,17 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 
 void AMyCharacter::Fire(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Log, TEXT("Fire"));
 	if (IsValid(AnimInstance))
 	{
 		AnimInstance->PlayAttackMontage();
 
+		FTransform SocketTransform = GetMesh()->GetSocketTransform(FName("ArrowSocket"));
+		FVector SocketLocation = SocketTransform.GetLocation();
+		FRotator SocketRotation = SocketTransform.GetRotation().Rotator();
 		FActorSpawnParameters params;
 		params.Owner = this;
 
-		auto MyArrow = GetWorld()->SpawnActor<AArrow>(GetActorLocation(), GetActorRotation(), params);
+		auto MyArrow = GetWorld()->SpawnActor<AArrow>(SocketLocation, SocketRotation, params);
 		
 	}
 }
