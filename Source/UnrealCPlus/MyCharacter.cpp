@@ -8,6 +8,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Arrow.h"
+#include "Kismet/GameplayStatics.h"
+#include "Camera/PlayerCameraManager.h"
 
 
 // Sets default values
@@ -124,24 +126,70 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 
 void AMyCharacter::Fire(const FInputActionValue& Value)
 {
+
+
 	if (IsValid(AnimInstance))
 	{
-		AnimInstance->PlayAttackMontage();
+		if (!IsShooting)
+		{
+			IsShooting = true;
 
-		FTransform SocketTransform = GetMesh()->GetSocketTransform(FName("ArrowSocket"));
-		FVector SocketLocation = SocketTransform.GetLocation();
-		FRotator SocketRotation = SocketTransform.GetRotation().Rotator();
-		FActorSpawnParameters params;
-		params.Owner = this;
+			AnimInstance->PlayAttackMontage();
 
-		auto MyArrow = GetWorld()->SpawnActor<AArrow>(SocketLocation, SocketRotation, params);
-		
+			float AttackRange = 10000.f;
+
+			FHitResult HitResult;
+
+			//auto
+			APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(this, 0);
+
+			FVector AimLocation = CameraManager->GetCameraLocation();
+			FVector TargetLocation = AimLocation + CameraManager->GetActorForwardVector() * AttackRange;
+			FCollisionQueryParams Params;
+			Params.AddIgnoredActor(this);
+
+			bool Result = GetWorld()->LineTraceSingleByChannel
+			(
+				OUT HitResult,
+				AimLocation,
+				TargetLocation,
+				ECollisionChannel::ECC_GameTraceChannel1,
+				Params
+
+			);
+
+			if (Result)
+			{
+				TargetLocation = HitResult.ImpactPoint;
+				DrawDebugLine(GetWorld(), AimLocation, TargetLocation, FColor::Green, true);
+			}
+			else
+			{
+				DrawDebugLine(GetWorld(), AimLocation, TargetLocation, FColor::Red, true);
+			}
+
+
+			FTransform SocketTransform = GetMesh()->GetSocketTransform(FName("ArrowSocket"));
+			SocketLocation = SocketTransform.GetLocation();
+			FVector DeltaVector = TargetLocation - SocketLocation;
+			SocketRotation = FRotationMatrix::MakeFromX(DeltaVector).Rotator();
+		}
+
 	}
 }
 
 void AMyCharacter::PlayerAttack()
 {
-	
-	UE_LOG(LogTemp, Log, TEXT("PlayerAttack"));
+
+	FActorSpawnParameters params;
+	params.Owner = this;
+	params.Instigator = this;
+
+	auto MyArrow = GetWorld()->SpawnActor<AArrow>(SocketLocation, SocketRotation, params);
+}
+
+void AMyCharacter::PlayerReload()
+{
+	IsShooting = false;
 }
 

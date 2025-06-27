@@ -41,6 +41,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* FireAction;
 
+	UPROPERTY(VisibleAnywhere)
+	FVector SocketLocation;
+	UPROPERTY(VisibleAnywhere)
+	FRotator SocketRotation;
+
+	UPROPERTY(VisibleAnywhere)
+	bool IsShooting = false;
+
 public:
 	// Sets default values for this character's properties
 	AMyCharacter();
@@ -66,6 +74,6 @@ public:
 	void Fire(const FInputActionValue& Value);
 
 	void PlayerAttack();
-
+	void PlayerReload();
 
 };

@@ -74,7 +74,13 @@ void UMyAnimInstance::PlayAttackMontage()
 	}
 }
 
-void UMyAnimInstance::AnimNotify_Hit()
+void UMyAnimInstance::AnimNotify_SaveAttack()
+{
+	MyCharacter->PlayerReload();
+}
+
+void UMyAnimInstance::AnimNotify_Shoot()
 {
 	MyCharacter->PlayerAttack();
 }
+
