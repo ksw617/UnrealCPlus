@@ -51,3 +51,8 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	return 0.0f;
 }
 
+void AEnemy::EnemyAttack()
+{
+	UE_LOG(LogTemp, Log, TEXT("Attack"));
+}
+
