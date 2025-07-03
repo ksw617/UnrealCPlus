@@ -10,10 +10,16 @@ UCLASS()
 class UNREALCPLUS_API AEnemy : public ACharacter
 {
 	GENERATED_BODY()
-
+private:
+	UPROPERTY(VisibleAnywhere)
+	class UEnemyAnimInstance* EnemyAnimInstance;
+private:
+	bool isAttacking = false;
 public:
 	// Sets default values for this character's properties
 	AEnemy();
+public:
+	bool GetIsAttacking() const { return isAttacking;}
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,4 +36,7 @@ public:
 
 public:
 	void EnemyAttack();
+public:
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 };

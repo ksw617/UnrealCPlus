@@ -3,6 +3,7 @@
 
 #include "Enemy.h"
 #include "EnemyAIController.h"
+#include "EnemyAnimInstance.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -20,6 +21,13 @@ AEnemy::AEnemy()
 
 	}
 
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AI(TEXT("/Script/Engine.AnimBlueprint'/Game/Animation/ABP_Enemy.ABP_Enemy_C'"));
+	if (AI.Succeeded())
+	{
+		GetMesh()->SetAnimClass(AI.Class);
+
+	}
+
 	AIControllerClass = AEnemyAIController::StaticClass();
 
 }
@@ -28,6 +36,10 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	EnemyAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	EnemyAnimInstance->OnMontageEnded.AddDynamic(this, &AEnemy::OnAttackMontageEnded);
+
 	
 }
 
@@ -53,6 +65,20 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 
 void AEnemy::EnemyAttack()
 {
-	UE_LOG(LogTemp, Log, TEXT("Attack"));
+	if (IsValid(EnemyAnimInstance))
+	{
+		if (!isAttacking)
+		{
+
+			EnemyAnimInstance->PlayAttackMontage();
+			isAttacking = true;
+		}
+
+	}
+}
+
+void AEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	isAttacking = false;
 }
 
