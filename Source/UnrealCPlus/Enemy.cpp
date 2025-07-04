@@ -40,8 +40,8 @@ void AEnemy::BeginPlay()
 	EnemyAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 	EnemyAnimInstance->OnMontageEnded.AddDynamic(this, &AEnemy::OnAttackMontageEnded);
 
-	
 }
+
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
@@ -57,11 +57,12 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+/*
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	UE_LOG(LogTemp, Log, TEXT("Damaged : %f"), DamageAmount);
 	return 0.0f;
-}
+}	*/
 
 void AEnemy::EnemyAttack()
 {

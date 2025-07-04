@@ -40,12 +40,14 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (IsValid(CharacterMovement))
 	{
 		Velocity = CharacterMovement->Velocity;
-		FRotator Rotation = MyCharacter->GetActorRotation();
 		GroundSpeed = Velocity.Size2D();
+
 		auto Acceleration = CharacterMovement->GetCurrentAcceleration();
 
 		ShouldMove = GroundSpeed >= 3.0 && Acceleration != FVector::Zero();
 
+
+		FRotator Rotation = MyCharacter->GetActorRotation();
 		IsFalling = CharacterMovement->IsFalling();
 
 		 AimRotation = MyCharacter->GetBaseAimRotation();

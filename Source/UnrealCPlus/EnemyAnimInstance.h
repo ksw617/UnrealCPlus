@@ -21,6 +21,7 @@ public:
 	UPROPERTY(Category = "Ani", EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	bool ShouldMove = false;
 
+
 public:
 	UEnemyAnimInstance();
 public:
